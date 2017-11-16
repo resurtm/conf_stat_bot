@@ -1,15 +1,17 @@
 const axios = require('axios');
 const config = require('./config');
 
-const telegramURL = `https://api.telegram.org/bot${config.telegram.botAccessToken}/`;
+const telegramURL = config.telegram.apiURL.replace('{{ACCESS_TOKEN}}', config.telegram.botAccessToken);
 
 function commonRequest(action, method = 'get') {
   return axios({
     method: method,
     url: telegramURL + action,
   }).then(resp => {
-    console.log('common request response data:');
-    console.log(JSON.stringify(resp.data, null, 2));
+    if (config.verboseLogging) {
+      console.log('common request response data:');
+      console.log(JSON.stringify(resp.data, null, 2));
+    }
     if (!resp.data.ok) {
       return Promise.reject(new Error('response data is not ok'));
     }
@@ -31,12 +33,18 @@ function setWebhook(webhookURL) {
       headers: {'Content-Type': 'application/json'},
     },
   ).then(resp => {
-    console.log(resp.data);
+    return resp.data.result;
   });
 }
 
 function getWebhookInfo() {
-  return commonRequest('getWebhookInfo');
+  return commonRequest('getWebhookInfo').then(res => {
+    if (config.verboseLogging) {
+      console.log('webhook info:');
+      console.log(JSON.stringify(res, null, 2));
+    }
+    return res;
+  });
 }
 
 function deleteWebhook() {
