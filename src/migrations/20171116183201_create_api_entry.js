@@ -3,7 +3,7 @@ exports.up = function (knex, Promise) {
     knex.schema.createTable('api_entries', (table) => {
       table.increments();
       table.json('content');
-      table.timestamps();
+      table.timestamps(true, true);
     }),
   ]);
 };
