@@ -6,6 +6,7 @@
   "author": "resurtm <resurtm@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "axios": "^0.17.1",
     "express": "^4.16.2"
   },
   "devDependencies": {
