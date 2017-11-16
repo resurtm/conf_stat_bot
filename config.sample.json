@@ -1,3 +1,17 @@
 {
-  "telegramBotAccessToken": "XXX:XXX"
+  "verboseLogging": false,
+  "telegram": {
+    "apiURL": "https://api.telegram.org/bot{{ACCESS_TOKEN}}/",
+    "webhookAccessToken": "XXX",
+    "botAccessToken": "XXX:XXX"
+  },
+  "ngrok": {
+    "apiURL": "http://127.0.0.1:4040/api/"
+  },
+  "db": {
+    "host": "127.0.0.1",
+    "database": "XXX",
+    "user": "XXX",
+    "password": "XXX"
+  }
 }

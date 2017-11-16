@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const config = require('./config');
 const telegram = require('./telegram');
 const ngrok = require('./ngrok');
+const db = require('./db');
 
 const app = express();
 app.use(bodyParser.json());
@@ -37,6 +38,15 @@ app.post('/webhook/:token', (req, res) => {
     res.status(403).send('invalid access token has been provided');
     return;
   }
-  console.log(req.body);
+
+  if (config.verboseLogging) {
+    console.log('\ncontent received:');
+    console.log('-----------------');
+    console.log(req.body);
+    console.log('-----------------\n');
+  }
+
+  db.ApiEntry.forge({content: req.body}).save();
+
   res.send('conf_stat_bot');
 });
