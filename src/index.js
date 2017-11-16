@@ -8,30 +8,37 @@ const db = require('./db');
 const app = express();
 app.use(bodyParser.json());
 
-telegram.deleteWebhook().then(res => {
-  if (!res) {
-    return Promise.reject(new Error('unable to remove existing webhook'))
-  }
-}).then(() => {
-  return ngrok.findHTTPSTunnel();
-}).then(tunnel => {
-  return telegram.setWebhook(`${tunnel.public_url}/webhook/${config.telegram.webhookAccessToken}/`);
-}).then(res => {
-  if (!res) {
-    return Promise.reject(new Error('unable to set new webhook'))
-  }
-}).then(() => {
-  return telegram.getWebhookInfo();
-}).then(res => {
-  console.log(`webhook URL set to: ${res.url}`);
-  app.listen(8900, () => {
-    if (config.verboseLogging) {
-      console.log('app listening on 8900')
+telegram.deleteWebhook()
+  .then(res => {
+    if (!res) {
+      return Promise.reject(new Error('unable to remove existing webhook'))
     }
+  })
+  .then(() => {
+    return ngrok.findHTTPSTunnel();
+  })
+  .then(tunnel => {
+    return telegram.setWebhook(`${tunnel.public_url}/webhook/${config.telegram.webhookAccessToken}/`);
+  })
+  .then(res => {
+    if (!res) {
+      return Promise.reject(new Error('unable to set new webhook'))
+    }
+  })
+  .then(() => {
+    return telegram.getWebhookInfo();
+  })
+  .then(res => {
+    console.log(`webhook URL set to: ${res.url}`);
+    app.listen(8900, () => {
+      if (config.verboseLogging) {
+        console.log('app listening on 8900')
+      }
+    });
+  })
+  .catch(err => {
+    console.log(err);
   });
-}).catch(err => {
-  console.log(err);
-});
 
 app.post('/webhook/:token', (req, res) => {
   if (!('token' in req.params) || req.params.token !== config.telegram.webhookAccessToken) {
@@ -46,7 +53,24 @@ app.post('/webhook/:token', (req, res) => {
     console.log('-----------------\n');
   }
 
-  db.ApiEntry.forge({content: req.body}).save();
+  db.bookshelf
+    .transaction(function (t) {
+      return db.ApiEntry.forge({
+        content: req.body,
+        timestamp: parseInt(req.body.message.date, 10),
+      }).save(null, {transacting: t})
+        .then(apiEntry => {
+          return db.UserMessage.forge({
+            tg_user_id: req.body.message.from.id.toString(),
+            tg_chat_id: req.body.message.chat.id.toString(),
+            api_entry_id: parseInt(apiEntry.id, 10),
+            timestamp: parseInt(req.body.message.date, 10),
+          }).save(null, {transacting: t});
+        });
+    })
+    .catch(err => {
+      console.log(err);
+    });
 
   res.send('conf_stat_bot');
 });

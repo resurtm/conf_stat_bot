@@ -9,8 +9,16 @@ const ApiEntry = bookshelf.Model.extend({
   tableName: 'api_entries',
 });
 
+const UserMessage = bookshelf.Model.extend({
+  tableName: 'user_messages',
+  apiEntry() {
+    return this.hasOne(ApiEntry);
+  }
+});
+
 module.exports = {
   knex,
   bookshelf,
   ApiEntry,
+  UserMessage,
 };

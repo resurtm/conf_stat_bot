@@ -1,8 +1,9 @@
 exports.up = function (knex, Promise) {
   return Promise.all([
     knex.schema.createTable('api_entries', (table) => {
-      table.increments();
+      table.increments('id');
       table.json('content');
+      table.integer('timestamp').unsigned();
       table.timestamps(true, true);
     }),
   ]);
