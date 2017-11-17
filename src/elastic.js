@@ -16,6 +16,18 @@ function indices() {
   return ['user-message']
 }
 
+function mappings() {
+  return {
+    'user-message': {
+      properties: {
+        tg_user_id: {type: 'string', index: 'not_analyzed'},
+        tg_chat_id: {type: 'string', index: 'not_analyzed'},
+        timestamp: {type: 'long', index: 'not_analyzed'},
+      },
+    },
+  };
+}
+
 function reindexDocument(data, index) {
   return client.index({
     index: indexPrefix + index,
@@ -33,5 +45,6 @@ module.exports = {
   indexPrefix,
   client,
   indices,
+  mappings,
   reindexUserMessage,
 };

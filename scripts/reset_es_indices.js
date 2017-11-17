@@ -8,12 +8,20 @@ console.log('resetting ElasticSearch indices...');
 const promises = [];
 
 for (let i in elastic.indices()) {
-  const index = elastic.indexPrefix + elastic.indices()[i];
+  const rawName = elastic.indices()[i];
+  const index = elastic.indexPrefix + rawName;
   console.log('managing index: ' + index);
 
   const promise = elastic.client.indices.exists({index})
     .then(exists => exists ? elastic.client.indices.delete({index}) : Promise.resolve())
-    .then(() => elastic.client.indices.create({index}))
+    .then(() => elastic.client.indices.create({
+      index,
+      body: {
+        mappings: {
+          [index + '-type']: elastic.mappings()[rawName],
+        },
+      },
+    }))
     .then(() => db.UserMessage.fetchAll())
     .then(userMessages => {
       _.each(userMessages.models, model => {
