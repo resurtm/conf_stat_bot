@@ -24,6 +24,16 @@ const UserMessage = bookshelf.Model.extend({
   apiEntry() {
     return this.belongsTo(ApiEntry);
   },
+  user() {
+    return this.belongsTo(User);
+  },
+});
+
+const User = bookshelf.Model.extend({
+  tableName: 'users',
+  userMessage() {
+    return this.hasOne(UserMessage);
+  },
 });
 
 module.exports = {
@@ -31,4 +41,5 @@ module.exports = {
   bookshelf,
   ApiEntry,
   UserMessage,
+  User,
 };

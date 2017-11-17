@@ -20,4 +20,4 @@ reset_es_indices:
 	scripts/reset_es_indices.js
 
 test_analytics:
-	scripts/test_analytics.js
+	scripts/test_analytics.js $(chat)
