@@ -61,7 +61,7 @@ function topPostersForLast24Hours(chatID) {
           hasUserName: attrs.user_name.length > 0,
         };
       });
-      return result;
+      return _.orderBy(result, ['messageCount'], ['desc']);
     });
 }
 

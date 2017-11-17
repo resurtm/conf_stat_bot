@@ -3,6 +3,9 @@ const telegram = require('../telegram');
 const analytics = require('../analytics');
 
 function statCommandProcessor(data) {
+  // if (data.message.chat.id.toString() === '-1001030817764') {
+  //   return Promise.resolve();
+  // }
   return analytics.topPostersForLast24Hours(data.message.chat.id)
     .then(res => {
       let text = '@' + data.message.from.username + ', here you are 😃\n\n';
