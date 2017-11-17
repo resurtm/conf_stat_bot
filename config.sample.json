@@ -3,7 +3,8 @@
   "telegram": {
     "apiURL": "https://api.telegram.org/bot{{ACCESS_TOKEN}}/",
     "webhookAccessToken": "XXX",
-    "botAccessToken": "XXX:XXX"
+    "botAccessToken": "XXX:XXX",
+    "botUsername": "XXX"
   },
   "ngrok": {
     "apiURL": "http://127.0.0.1:4040/api/"
@@ -13,5 +14,9 @@
     "database": "XXX",
     "user": "XXX",
     "password": "XXX"
+  },
+  "elastic": {
+    "host": "http://127.0.0.1:9200",
+    "apiVersion": "2.4"
   }
 }
