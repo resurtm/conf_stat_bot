@@ -1,4 +1,4 @@
-.PHONY: ngrok nodemon migrate create_migration
+.PHONY: ngrok nodemon migrate create_migration reset_es_indices
 
 ngrok:
 	ngrok http 8900
@@ -11,3 +11,6 @@ migrate:
 
 create_migration:
 	node_modules/.bin/knex --knexfile=src/knexfile.js migrate:make $(name)
+
+reset_es_indices:
+	scripts/reset_es_indices.js

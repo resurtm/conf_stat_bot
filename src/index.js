@@ -1,9 +1,11 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const _ = require('lodash');
 const config = require('./config');
 const telegram = require('./telegram');
 const ngrok = require('./ngrok');
 const db = require('./db');
+const elastic = require('./elastic');
 
 const app = express();
 app.use(bodyParser.json());
@@ -68,9 +70,12 @@ app.post('/webhook/:token', (req, res) => {
           }).save(null, {transacting: t});
         });
     })
+    .then(userMessage => {
+      elastic.reindexUserMessage(_.pick(userMessage.attributes, ['tg_user_id', 'tg_chat_id', 'timestamp']));
+    })
     .catch(err => {
       console.log(err);
     });
 
-  res.send('conf_stat_bot');
+  res.sendStatus(200);
 });

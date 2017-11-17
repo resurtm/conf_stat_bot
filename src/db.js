@@ -2,18 +2,28 @@ const knexLib = require('knex');
 const bookshelfLib = require('bookshelf');
 const knexfile = require('./knexfile');
 
-const knex = knexLib(knexfile);
-const bookshelf = bookshelfLib(knex);
+let knex = null;
+let bookshelf = null;
+
+if (knex === null) {
+  knex = knexLib(knexfile);
+}
+if (bookshelf === null) {
+  bookshelf = bookshelfLib(knex);
+}
 
 const ApiEntry = bookshelf.Model.extend({
   tableName: 'api_entries',
+  userMessage() {
+    return this.hasOne(UserMessage);
+  },
 });
 
 const UserMessage = bookshelf.Model.extend({
   tableName: 'user_messages',
   apiEntry() {
-    return this.hasOne(ApiEntry);
-  }
+    return this.belongsTo(ApiEntry);
+  },
 });
 
 module.exports = {
