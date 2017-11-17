@@ -3,10 +3,11 @@ const bodyParser = require('body-parser');
 const config = require('./config');
 const telegram = require('./telegram');
 const ngrok = require('./ngrok');
-const webhookHandler = require('./webhookHandler');
+const routes = require('./routes');
 
 const app = express();
 app.use(bodyParser.json());
+app.use('/', routes);
 
 telegram.deleteWebhook()
   .then(res => {
@@ -18,7 +19,7 @@ telegram.deleteWebhook()
     return ngrok.findHTTPSTunnel();
   })
   .then(tunnel => {
-    return telegram.setWebhook(`${tunnel.public_url}/webhook/${config.telegram.webhookAccessToken}/`);
+    return telegram.setWebhook(tunnel.public_url + '/webhook/?token=' + config.telegram.webhookAccessToken);
   })
   .then(res => {
     if (!res) {
@@ -31,13 +32,9 @@ telegram.deleteWebhook()
   .then(res => {
     console.log(`webhook URL set to: ${res.url}`);
     app.listen(8900, () => {
-      if (config.verboseLogging) {
-        console.log('app listening on 8900')
-      }
+      if (config.verboseLogging) console.log('app listening on 8900')
     });
   })
   .catch(err => {
     console.log(err);
   });
-
-app.post('/webhook/:token', webhookHandler);

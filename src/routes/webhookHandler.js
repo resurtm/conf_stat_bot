@@ -1,21 +1,8 @@
 const _ = require('lodash');
-const config = require('./config');
-const db = require('./db');
-const elastic = require('./elastic');
+const db = require('../db');
+const elastic = require('../elastic');
 
 function webhookHandler(req, res) {
-  if (!('token' in req.params) || req.params.token !== config.telegram.webhookAccessToken) {
-    res.status(403).send('invalid access token has been provided');
-    return;
-  }
-
-  if (config.verboseLogging) {
-    console.log('\ncontent received:');
-    console.log('-----------------');
-    console.log(req.body);
-    console.log('-----------------\n');
-  }
-
   db.bookshelf
     .transaction(function (t) {
       return db.ApiEntry.forge({
@@ -32,7 +19,7 @@ function webhookHandler(req, res) {
         });
     })
     .then(userMessage => {
-      elastic.reindexUserMessage(_.pick(userMessage.attributes, ['tg_user_id', 'tg_chat_id', 'timestamp']));
+      return elastic.reindexUserMessage(_.pick(userMessage.attributes, ['tg_user_id', 'tg_chat_id', 'timestamp']));
     })
     .catch(err => {
       console.log(err);
