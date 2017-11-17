@@ -11,7 +11,9 @@ function webhookHandler(req, res) {
   } else if (text === '/link' || text === '/link@' + config.telegram.botUsername) {
     processor = linkCommandProcessor;
   }
-  processor(req.body).then(() => res.sendStatus(200)).catch(() => res.sendStatus(500));
+  processor(req.body)
+    .then(() => res.sendStatus(200))
+    .catch(() => res.sendStatus(500));
 }
 
 module.exports = webhookHandler;

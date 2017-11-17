@@ -50,7 +50,7 @@ function deleteWebhook() {
   return simpleRequest('deleteWebhook', 'post');
 }
 
-function sendMessage({chatID, messageText, replyToMessageID}) {
+function sendMessage({chatID, messageText, replyToMessageID, parseMode}) {
   if (typeof chatID === 'undefined' || typeof messageText === 'undefined') {
     return Promise.reject('chatID and messageText parameters both must be set');
   }
@@ -60,6 +60,9 @@ function sendMessage({chatID, messageText, replyToMessageID}) {
   };
   if (typeof replyToMessageID !== 'undefined') {
     data.reply_to_message_id = parseInt(replyToMessageID, 10);
+  }
+  if (typeof parseMode !== 'undefined') {
+    data.parse_mode = parseMode;
   }
   return dataRequest('sendMessage', data);
 }
