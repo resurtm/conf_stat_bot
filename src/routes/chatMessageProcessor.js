@@ -18,12 +18,9 @@ function chatMessageProcessor(data) {
           }).save(null, {transacting: t});
         });
     })
-    .then(userMessage => {
-      return elastic.reindexUserMessage(_.pick(userMessage.attributes, ['tg_user_id', 'tg_chat_id', 'timestamp']));
-    })
-    .catch(err => {
-      console.log(err);
-    });
+    .then(userMessage => elastic.reindexUserMessage(
+      _.pick(userMessage.attributes, ['tg_user_id', 'tg_chat_id', 'timestamp']),
+    ));
 }
 
 module.exports = chatMessageProcessor;
