@@ -1,7 +1,7 @@
 const telegram = require('../telegram');
 
 function linkCommandProcessor(data) {
-  // if (data.message.chat.id.toString() === '-1001030817764') {
+  // if (data.message.chat.id.toString() === '') {
   //   return Promise.resolve();
   // }
   return telegram.sendMessage({

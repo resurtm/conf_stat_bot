@@ -3,6 +3,7 @@
   "telegram": {
     "apiURL": "https://api.telegram.org/bot{{ACCESS_TOKEN}}/",
     "webhookAccessToken": "XXX",
+    "generateAccessToken": true,
     "botAccessToken": "XXX:XXX",
     "botUsername": "XXX"
   },
@@ -18,5 +19,6 @@
   "elastic": {
     "host": "http://127.0.0.1:9200",
     "apiVersion": "2.4"
-  }
+  },
+  "ignoreConferences": []
 }
