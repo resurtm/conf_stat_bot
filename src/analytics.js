@@ -1,6 +1,7 @@
 const _ = require('lodash');
 const db = require('../src/db');
 const elastic = require('../src/elastic');
+const tools = require('../src/tools');
 
 function topPostersLast24HoursQuery(chatId) {
   const timestamp = Math.round(+new Date() / 1000);
@@ -48,7 +49,10 @@ async function topPostersLast24Hours(chatId) {
     res.push({
       userId: user.attributes.tg_user_id,
       messageCount: buckets[i].doc_count,
-      // todo: add username, first & last name handling code here
+      displayName: tools.displayName({
+        username: user.attributes.user_name,
+        first_name: user.attributes.first_name,
+      }),
     });
   }
   return res;

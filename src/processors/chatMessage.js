@@ -28,7 +28,7 @@ async function chatMessageProcessorInternal(data, t) {
     timestamp: data.message.date,
   }).save(null, {transacting: t});
 
-  elastic.reindexUserMessage(_.pick(userMessage.attributes, ['tg_user_id', 'tg_chat_id', 'timestamp']));
+  await elastic.reindexUserMessage(_.pick(userMessage.attributes, ['tg_user_id', 'tg_chat_id', 'timestamp']));
 }
 
 async function chatMessageProcessor(data) {
