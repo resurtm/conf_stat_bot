@@ -32,7 +32,7 @@ async function chatMessageProcessorInternal(data, t) {
 }
 
 async function chatMessageProcessor(data) {
-  db.bookshelf.transaction(t => chatMessageProcessorInternal(data, t));
+  await db.bookshelf.transaction(t => chatMessageProcessorInternal(data, t));
 }
 
 module.exports = chatMessageProcessor;
