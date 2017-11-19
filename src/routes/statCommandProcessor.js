@@ -6,7 +6,7 @@ function statCommandProcessor(data) {
   // if (data.message.chat.id.toString() === '-1001030817764') {
   //   return Promise.resolve();
   // }
-  return analytics.topPostersForLast24Hours(data.message.chat.id)
+  return analytics.topPostersLast24Hours(data.message.chat.id)
     .then(res => {
       let text = '@' + data.message.from.username + ', here you are 😃\n\n';
       text += 'Top 10 posters in last 24 hours:\n\n';

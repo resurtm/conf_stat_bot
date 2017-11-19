@@ -2,7 +2,7 @@ const _ = require('lodash');
 const elastic = require('../src/elastic');
 const db = require('../src/db');
 
-function topPostersForLast24HoursInternal(chatID) {
+function topPostersLast24HoursQuery(chatId) {
   const ts = Math.round(+new Date() / 1000);
   return elastic.client.search({
     index: 'conf-stat-bot-user-message',
@@ -14,7 +14,7 @@ function topPostersForLast24HoursInternal(chatID) {
           must: [
             {
               term: {
-                tg_chat_id: chatID.toString(),
+                tg_chat_id: chatId,
               },
             },
             {
@@ -40,9 +40,22 @@ function topPostersForLast24HoursInternal(chatID) {
   });
 }
 
-function topPostersForLast24Hours(chatID) {
+async function topPostersLast24Hours(chatId) {
+  const buckets = (await topPostersLast24HoursQuery(chatId)).aggregations.users.buckets;
+  let res = [];
+  for (let i in buckets) {
+    const user = await db.User.where('tg_user_id', buckets[i].key).fetch();
+    res.push({
+      userId: user.attributes.tg_user_id,
+      messageCount: buckets[i].doc_count,
+    });
+  }
+  return res;
+}
+
+function topPostersLast24Hours2(chatID) {
   const docCounts = {};
-  return topPostersForLast24HoursInternal(chatID)
+  return topPostersLast24HoursQuery(chatID)
     .then(res => {
       const promises = [];
       _.forEach(res.aggregations.users.buckets, value => {
@@ -65,6 +78,4 @@ function topPostersForLast24Hours(chatID) {
     });
 }
 
-module.exports = {
-  topPostersForLast24Hours,
-};
+module.exports = {topPostersLast24Hours};

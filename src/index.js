@@ -9,7 +9,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use('/', routes);
 
-void async function main() {
+void async function setup() {
   let webhookInfo;
   try {
     await telegram.deleteWebhook();

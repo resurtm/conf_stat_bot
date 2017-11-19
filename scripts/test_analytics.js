@@ -6,8 +6,8 @@ const db = require('../src/db');
 
 const chatID = process.argv[2];
 
-console.log('topPostersForLast24Hours:');
-analytics.topPostersForLast24Hours(chatID)
+console.log('topPostersLast24Hours:');
+analytics.topPostersLast24Hours(chatID)
   .then(res => console.log(res))
   .then(() => db.knex.destroy())
   .catch(err => console.log(err));
