@@ -10,18 +10,18 @@ async function rateLimitMiddleware(req, res, next) {
     return;
   }
 
+  let user = await db.User.where('tg_user_id', req.body.message.from.id).fetch();
+  if (!user) {
+    user = await db.User.forge({
+      tg_user_id: req.body.message.from.id,
+      first_name: _.get(req.body, 'message.from.first_name', ''),
+      last_name: _.get(req.body, 'message.from.last_name', ''),
+      user_name: _.get(req.body, 'message.from.username', ''),
+    }).save();
+  }
+
   let rateLimit = await db.RateLimit.where('tg_user_id', req.body.message.from.id).fetch();
   if (!rateLimit) {
-    let user = await db.User.where('tg_user_id', req.body.message.from.id).fetch();
-    if (!user) {
-      user = await db.User.forge({
-        tg_user_id: req.body.message.from.id,
-        first_name: _.get(req.body, 'message.from.first_name', ''),
-        last_name: _.get(req.body, 'message.from.last_name', ''),
-        user_name: _.get(req.body, 'message.from.username', ''),
-      }).save(null);
-    }
-
     await db.RateLimit.forge({
       tg_user_id: req.body.message.from.id,
       user_id: user.id,
