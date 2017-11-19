@@ -7,7 +7,7 @@ function tokenMiddleware(req, res, next) {
   }
 
   if (!('token' in req.query) || req.query.token !== config.webhook.finalToken) {
-    res.status(403).send('invalid access token has been provided');
+    res.sendStatus(403);
     next(new Error('invalid access token has been provided'));
     return;
   }
