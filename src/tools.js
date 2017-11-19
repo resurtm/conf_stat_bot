@@ -22,4 +22,8 @@ function isCommand(data) {
   return false;
 }
 
-module.exports = {displayName, isCommand};
+function timestamp() {
+  return Math.round(+new Date() / 1000);
+}
+
+module.exports = {displayName, isCommand, timestamp};

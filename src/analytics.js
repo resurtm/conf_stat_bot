@@ -4,7 +4,6 @@ const elastic = require('../src/elastic');
 const tools = require('../src/tools');
 
 function topPostersLast24HoursQuery(chatId, topCount = 10) {
-  const timestamp = Math.round(+new Date() / 1000);
   return elastic.client.search({
     index: 'conf-stat-bot-user-message',
     body: {
@@ -21,8 +20,8 @@ function topPostersLast24HoursQuery(chatId, topCount = 10) {
             {
               range: {
                 timestamp: {
-                  from: timestamp - 60 * 60 * 24,
-                  to: timestamp,
+                  from: tools.timestamp() - 60 * 60 * 24,
+                  to: tools.timestamp(),
                 },
               },
             },

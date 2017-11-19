@@ -16,6 +16,7 @@ async function rateLimitMiddleware(req, res, next) {
     await db.RateLimit.forge({
       tg_user_id: req.body.message.from.id,
       user_id: user.id,
+      timestamp: tools.timestamp(),
     }).save();
 
     next();

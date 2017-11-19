@@ -7,6 +7,7 @@ exports.up = function (knex, Promise) {
       table.bigInteger('tg_user_id');
       table.integer('user_id').unsigned();
       table.foreign('user_id').references('users.id');
+      table.integer('timestamp').unsigned();
       table.timestamps(true, true);
     }),
   ]);

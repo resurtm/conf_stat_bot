@@ -4,6 +4,7 @@ const config = require('./config');
 const routes = require('./routes');
 const telegram = require('./telegram');
 const ngrok = require('./ngrok');
+const beats = require('./beats');
 
 (async () => {
   await telegram.deleteWebhook();
@@ -14,6 +15,8 @@ const ngrok = require('./ngrok');
   if (config.verboseLogging) {
     console.log(`webhook URL has been set to: ${webhookInfo.url}`);
   }
+
+  beats.register();
 
   const app = express();
   app.use(bodyParser.json());
