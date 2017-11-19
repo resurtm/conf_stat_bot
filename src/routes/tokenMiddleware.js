@@ -13,7 +13,7 @@ function tokenMiddleware(req, res, next) {
     console.log('-------------------------\n');
   }
 
-  if (!('token' in req.query) || req.query.token !== config.telegram.webhookAccessToken) {
+  if (!('token' in req.query) || req.query.token !== config.webhook.finalToken) {
     res.status(403).send('invalid access token has been provided');
     next('invalid access token has been provided');
     return;

@@ -17,12 +17,12 @@ function statCommandProcessor(data) {
         text += index + '. <b>' + v.displayName + '</b>, ' + v.messageCount + ' message(s)\n';
       });
 
-      telegram.sendMessage({
-        chatID: data.message.chat.id,
-        messageText: text,
-        replyToMessageID: data.message.message_id,
-        parseMode: 'HTML',
-      });
+      // telegram.sendMessage({
+      //   chatID: data.message.chat.id,
+      //   messageText: text,
+      //   replyToMessageID: data.message.message_id,
+      //   parseMode: 'HTML',
+      // });
     });
 }
 

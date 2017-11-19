@@ -10,7 +10,6 @@ function webhookHandler(req, res) {
     res.sendStatus(200);
     return;
   }
-
   let processor = chatMessageProcessor;
   if (text === '/stat' || text === '/stat@' + config.telegram.botUsername) {
     processor = statCommandProcessor;
