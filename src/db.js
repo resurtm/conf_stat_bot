@@ -1,45 +1,20 @@
-const knexLib = require('knex');
-const bookshelfLib = require('bookshelf');
-const knexfile = require('./knexfile');
-
-let knex = null;
-let bookshelf = null;
-
-if (knex === null) {
-  knex = knexLib(knexfile);
-}
-if (bookshelf === null) {
-  bookshelf = bookshelfLib(knex);
-}
+const knex = require('knex')(require('./knexfile'));
+const bookshelf = require('bookshelf')(knex);
 
 const ApiEntry = bookshelf.Model.extend({
   tableName: 'api_entries',
-  userMessage() {
-    return this.hasOne(UserMessage);
-  },
-});
-
-const UserMessage = bookshelf.Model.extend({
-  tableName: 'user_messages',
-  apiEntry() {
-    return this.belongsTo(ApiEntry);
-  },
-  user() {
-    return this.belongsTo(User);
-  },
+  userMessage: () => this.hasOne(UserMessage),
 });
 
 const User = bookshelf.Model.extend({
   tableName: 'users',
-  userMessage() {
-    return this.hasOne(UserMessage);
-  },
+  userMessage: () => this.hasOne(UserMessage),
 });
 
-module.exports = {
-  knex,
-  bookshelf,
-  ApiEntry,
-  UserMessage,
-  User,
-};
+const UserMessage = bookshelf.Model.extend({
+  tableName: 'user_messages',
+  apiEntry: () => this.belongsTo(ApiEntry),
+  user: () => this.belongsTo(User),
+});
+
+module.exports = {knex, bookshelf, ApiEntry, UserMessage, User};

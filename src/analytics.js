@@ -1,9 +1,9 @@
 const _ = require('lodash');
-const elastic = require('../src/elastic');
 const db = require('../src/db');
+const elastic = require('../src/elastic');
 
 function topPostersLast24HoursQuery(chatId) {
-  const ts = Math.round(+new Date() / 1000);
+  const timestamp = Math.round(+new Date() / 1000);
   return elastic.client.search({
     index: 'conf-stat-bot-user-message',
     body: {
@@ -20,8 +20,8 @@ function topPostersLast24HoursQuery(chatId) {
             {
               range: {
                 timestamp: {
-                  from: ts - 60 * 60 * 24,
-                  to: ts,
+                  from: timestamp - 60 * 60 * 24,
+                  to: timestamp,
                 },
               },
             },
@@ -48,34 +48,10 @@ async function topPostersLast24Hours(chatId) {
     res.push({
       userId: user.attributes.tg_user_id,
       messageCount: buckets[i].doc_count,
+      // todo: add username, first & last name handling code here
     });
   }
   return res;
-}
-
-function topPostersLast24Hours2(chatID) {
-  const docCounts = {};
-  return topPostersLast24HoursQuery(chatID)
-    .then(res => {
-      const promises = [];
-      _.forEach(res.aggregations.users.buckets, value => {
-        docCounts[value.key] = value.doc_count;
-        promises.push(db.User.where('tg_user_id', value.key).fetch());
-      });
-      return Promise.all(promises);
-    })
-    .then(res => {
-      const result = {};
-      _.forEach(res, value => {
-        const attrs = value.attributes;
-        result[attrs.tg_user_id] = {
-          messageCount: docCounts[attrs.tg_user_id],
-          displayName: attrs.user_name.length > 0 ? attrs.user_name : attrs.first_name,
-          hasUserName: attrs.user_name.length > 0,
-        };
-      });
-      return _.orderBy(result, ['messageCount'], ['desc']);
-    });
 }
 
 module.exports = {topPostersLast24Hours};

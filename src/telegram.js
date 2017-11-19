@@ -24,8 +24,8 @@ async function dataRequest(methodName, data) {
   return resp.data.result;
 }
 
-async function getMe() {
-  return await simpleRequest('getMe');
+function getMe() {
+  return simpleRequest('getMe');
 }
 
 async function setWebhook(webhookUrl) {

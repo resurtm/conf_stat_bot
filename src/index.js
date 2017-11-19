@@ -5,26 +5,22 @@ const routes = require('./routes');
 const telegram = require('./telegram');
 const ngrok = require('./ngrok');
 
-const app = express();
-app.use(bodyParser.json());
-app.use('/', routes);
+(async () => {
+  await telegram.deleteWebhook();
+  const tun = await ngrok.findHttpsTunnel();
+  await telegram.setWebhook(`${tun.public_url}/webhook/?token=${config.webhook.finalToken}`);
+  const webhookInfo = await telegram.getWebhookInfo();
 
-void async function setup() {
-  let webhookInfo;
-  try {
-    await telegram.deleteWebhook();
-    const tun = await ngrok.findHttpsTunnel();
-    await telegram.setWebhook(`${tun.public_url}/webhook/?token=${config.webhook.finalToken}`);
-    webhookInfo = await telegram.getWebhookInfo();
-  } catch (e) {
-    console.error(e);
-  }
   if (config.verboseLogging) {
     console.log(`webhook URL has been set to: ${webhookInfo.url}`);
   }
+
+  const app = express();
+  app.use(bodyParser.json());
+  app.use('/', routes);
   app.listen(config.webhook.serverPort, config.webhook.serverHostname, () => {
     if (config.verboseLogging) {
       console.log(`app listening on ${config.webhook.serverHostname}:${config.webhook.serverPort}`);
     }
   });
-}();
+})();

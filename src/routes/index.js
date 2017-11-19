@@ -1,10 +1,10 @@
 const express = require('express');
-const tokenMiddleware = require('./tokenMiddleware');
-const webhookHandler = require('./webhookHandler');
+const tokenMiddleware = require('../middlewares/token');
+const webhookHandler = require('./webhook');
 
-const router = express.Router();
+const routes = express.Router();
 
-router.use(tokenMiddleware);
-router.post('/webhook/', webhookHandler);
+routes.use(tokenMiddleware);
+routes.post('/webhook/', webhookHandler);
 
-module.exports = router;
+module.exports = routes;
