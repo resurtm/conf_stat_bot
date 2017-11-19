@@ -1,8 +1,25 @@
 const _ = require('lodash');
+const config = require('../config');
 
-function displayName(data) {
-  const userName = _.get(data, 'username', null);
-  return userName === null || userName.length === 0 ? data.first_name : `@${userName}`;
+function displayName(fromData) {
+  const userName = _.get(fromData, 'username', null);
+  return userName === null || userName.length === 0 ? fromData.first_name : `@${userName}`;
 }
 
-module.exports = {displayName};
+function isCommand(data) {
+  const text = _.get(data, 'message.text', null);
+  if (text === null || text.length === 0 || text[0] !== '/') {
+    return false;
+  }
+
+  const commands = ['stat', 'link'];
+  for (let i in commands) {
+    const command = commands[i];
+    if (text === `/${command}` || text === `/${command}@${config.telegram.botUsername}`) {
+      return true;
+    }
+  }
+  return false;
+}
+
+module.exports = {displayName, isCommand};

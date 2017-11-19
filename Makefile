@@ -1,8 +1,8 @@
-.PHONY: default ngrok nodemon run migrate create_migration reset_es_indices test_analytics test_analytics_chats
+.PHONY: default ngrok nodemon run migrate rollback create_migration reset_es_indices test_analytics test_analytics_chats
 
 default:
-	@echo "\navailable commands:\n\tngrok\n\tnodemon\n\trun\n\tmigrate\n\tcreate_migration\n\treset_es_indices"
-	@echo "\ttest_analytics\n\ttest_analytics_chats\n"
+	@echo "\navailable commands:\n\tngrok\n\tnodemon\n\trun\n\tmigrate\n\trollback\n\tcreate_migration"
+	@echo "\treset_es_indices\n\ttest_analytics\n\ttest_analytics_chats\n"
 
 ngrok:
 	ngrok http 8900
@@ -15,6 +15,9 @@ run:
 
 migrate:
 	node_modules/.bin/knex --knexfile=src/knexfile.js migrate:latest
+
+rollback:
+	node_modules/.bin/knex --knexfile=src/knexfile.js migrate:rollback
 
 create_migration:
 	node_modules/.bin/knex --knexfile=src/knexfile.js migrate:make $(name)

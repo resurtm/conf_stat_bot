@@ -3,7 +3,7 @@ const db = require('../src/db');
 const elastic = require('../src/elastic');
 const tools = require('../src/tools');
 
-function topPostersLast24HoursQuery(chatId) {
+function topPostersLast24HoursQuery(chatId, topCount = 10) {
   const timestamp = Math.round(+new Date() / 1000);
   return elastic.client.search({
     index: 'conf-stat-bot-user-message',
@@ -33,7 +33,7 @@ function topPostersLast24HoursQuery(chatId) {
         users: {
           terms: {
             field: 'tg_user_id',
-            size: 10,
+            size: topCount,
           },
         },
       },

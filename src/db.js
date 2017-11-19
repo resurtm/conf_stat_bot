@@ -17,4 +17,9 @@ const UserMessage = bookshelf.Model.extend({
   user: () => this.belongsTo(User),
 });
 
-module.exports = {knex, bookshelf, ApiEntry, UserMessage, User};
+const RateLimit = bookshelf.Model.extend({
+  tableName: 'rate_limits',
+  user: () => this.belongsTo(User),
+});
+
+module.exports = {knex, bookshelf, ApiEntry, User, UserMessage, RateLimit};

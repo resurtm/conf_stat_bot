@@ -25,5 +25,6 @@
     "host": "http://127.0.0.1:9200",
     "apiVersion": "2.4"
   },
-  "ignoreChats": []
+  "ignoreChats": [],
+  "oneCommandPerSeconds": 15
 }
