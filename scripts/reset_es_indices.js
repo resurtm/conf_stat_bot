@@ -1,39 +1,35 @@
 #!/usr/bin/env node
 
 const _ = require('lodash');
-const elastic = require('../src/elastic');
 const db = require('../src/db');
+const elastic = require('../src/elastic');
 
 console.log('resetting ElasticSearch indices...');
-const promises = [];
 
-for (let i in elastic.indices()) {
-  const rawName = elastic.indices()[i];
-  const index = elastic.indexPrefix + rawName;
-  console.log('managing index: ' + index);
+async function manageUserMessages() {
+  const rawIndex = 'user-message';
+  const index = elastic.indexPrefix + rawIndex;
 
-  const promise = elastic.client.indices.exists({index})
-    .then(exists => exists ? elastic.client.indices.delete({index}) : Promise.resolve())
-    .then(() => elastic.client.indices.create({
-      index,
-      body: {
-        mappings: {
-          [index + '-type']: elastic.mappings()[rawName],
-        },
+  if (await elastic.client.indices.exists({index})) {
+    await elastic.client.indices.delete({index});
+  }
+
+  await elastic.client.indices.create({
+    index,
+    body: {
+      mappings: {
+        [index + '-type']: elastic.mappings[rawIndex],
       },
-    }))
-    .then(() => db.UserMessage.fetchAll())
-    .then(userMessages => {
-      _.each(userMessages.models, model => {
-        elastic.reindexUserMessage(model);
-      });
-    })
-    .catch(err => console.log(err));
+    },
+  });
 
-  promises.push(promise);
+  const userMessages = await db.UserMessage.fetchAll();
+  for (let i in userMessages.models) {
+    await elastic.reindexUserMessage(userMessages.models[i]);
+  }
 }
 
-Promise.all(promises)
+Promise.all([manageUserMessages()])
   .then(() => db.knex.destroy())
+  .then(() => console.log('done!'))
   .catch(err => console.log(err));
-console.log('done!');

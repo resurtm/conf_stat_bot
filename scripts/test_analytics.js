@@ -1,13 +1,10 @@
 #!/usr/bin/env node
 
 const _ = require('lodash');
-const analytics = require('../src/analytics');
 const db = require('../src/db');
+const analytics = require('../src/analytics');
 
-const chatID = process.argv[2];
-
-console.log('topPostersLast24Hours:');
-analytics.topPostersLast24Hours(chatID)
-  .then(res => console.log(res))
+analytics.topPostersLast24Hours(process.argv[2])
+  .then(res => console.log('topPostersLast24Hours: ' + JSON.stringify(res, null, 2)))
   .then(() => db.knex.destroy())
   .catch(err => console.log(err));
