@@ -46,10 +46,4 @@ const sendMessage = ({chatId, messageText, replyToMessageId, parseMode}) => {
   return dataRequest('sendMessage', data);
 };
 
-module.exports = {
-  getMe,
-  setWebhook,
-  deleteWebhook,
-  getWebhookInfo,
-  sendMessage,
-};
+module.exports = {getMe, setWebhook, deleteWebhook, getWebhookInfo, sendMessage};
