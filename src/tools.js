@@ -6,12 +6,11 @@ function displayName(fromData) {
   return userName === null || userName.length === 0 ? fromData.first_name : `@${userName}`;
 }
 
-function isCommand(data) {
-  const text = _.get(data, 'message.text', null);
+function isCommand(messageData) {
+  const text = _.get(messageData, 'text', null);
   if (text === null || text.length === 0 || text[0] !== '/') {
     return false;
   }
-
   const commands = ['stat', 'link'];
   for (let i in commands) {
     const command = commands[i];

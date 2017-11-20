@@ -44,13 +44,21 @@ async function topPostersLast24Hours(chatId) {
   const buckets = (await topPostersLast24HoursQuery(chatId)).aggregations.users.buckets;
   let res = [];
   for (let i in buckets) {
-    const user = await db.User.where('tg_user_id', buckets[i].key).fetch();
+    const userMessage = await db.UserMessage
+      .where({
+        tg_chat_id: chatId,
+        tg_user_id: buckets[i].key,
+      })
+      .orderBy('timestamp', 'DESC')
+      .fetch({withRelated: ['apiEntry']});
+    const apiEntry = userMessage.related('apiEntry').attributes;
+
     res.push({
-      userId: user.attributes.tg_user_id,
+      userId: buckets[i].key,
       messageCount: buckets[i].doc_count,
       displayName: tools.displayName({
-        username: user.attributes.user_name,
-        first_name: user.attributes.first_name,
+        username: _.get(apiEntry, 'content.message.from.username', null),
+        first_name: _.get(apiEntry, 'content.message.from.first_name', null),
       }),
     });
   }

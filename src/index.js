@@ -8,7 +8,7 @@ const beats = require('./beats');
 const log = require('./log');
 
 const errorHandler = (type) => (err) => {
-  log.error((new Date).toUTCString() + ' ' + type + ':', err.message);
+  log.error(type);
   log.error(err.stack);
   log.error('exit');
 };
@@ -20,19 +20,14 @@ process.on('unhandledRejection', errorHandler('unhandledRejection'));
   const tun = await ngrok.findHttpsTunnel();
   await telegram.setWebhook(`${tun.public_url}/webhook/?token=${config.webhook.finalToken}`);
   const webhookInfo = await telegram.getWebhookInfo();
+  log.verbose('webhook URL has been set to: ' + webhookInfo.url);
 
-  if (config.verboseLogging) {
-    console.log(`webhook URL has been set to: ${webhookInfo.url}`);
-  }
-
-  beats.register();
+  beats();
 
   const app = express();
   app.use(bodyParser.json());
   app.use('/', routes);
   app.listen(config.webhook.serverPort, config.webhook.serverHostname, () => {
-    if (config.verboseLogging) {
-      console.log(`app listening on ${config.webhook.serverHostname}:${config.webhook.serverPort}`);
-    }
+    log.verbose(`app listening on ${config.webhook.serverHostname}:${config.webhook.serverPort}`);
   });
 })();

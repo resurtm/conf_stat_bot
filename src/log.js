@@ -4,10 +4,6 @@ const config = require('./config');
 const {createLogger, format, transports} = require('winston');
 const {combine, timestamp, printf} = format;
 
-const fmt = printf(info => {
-  return info.timestamp + ' ' + info.level.toUpperCase() + ': ' + info.message;
-});
-
 const logger = createLogger({
   transports: [
     new transports.File({
@@ -19,7 +15,10 @@ const logger = createLogger({
       level: config.verboseLogging ? 'verbose' : 'info',
     }),
   ],
-  format: combine(timestamp(), fmt),
+  format: combine(
+    timestamp(),
+    printf(info => info.timestamp + ' ' + info.level.toUpperCase() + ': ' + info.message),
+  ),
 });
 
 if (process.env.NODE_ENV !== 'production') {

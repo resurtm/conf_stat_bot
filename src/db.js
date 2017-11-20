@@ -4,12 +4,16 @@ const bookshelf = require('bookshelf')(knex);
 
 const ApiEntry = bookshelf.Model.extend({
   tableName: 'api_entries',
-  userMessage: () => this.hasOne(UserMessage),
+  userMessage() {
+    return this.belongsTo(UserMessage);
+  },
 });
 
 const UserMessage = bookshelf.Model.extend({
   tableName: 'user_messages',
-  apiEntry: () => this.belongsTo(ApiEntry),
+  apiEntry() {
+    return this.belongsTo(ApiEntry);
+  },
 });
 
 const RateLimit = bookshelf.Model.extend({

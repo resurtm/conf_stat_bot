@@ -12,8 +12,8 @@ const indices = ['user-message'];
 const mappings = {
   'user-message': {
     properties: {
-      tg_user_id: {type: 'string', index: 'not_analyzed'},
-      tg_chat_id: {type: 'string', index: 'not_analyzed'},
+      tg_user_id: {type: 'long', index: 'not_analyzed'},
+      tg_chat_id: {type: 'long', index: 'not_analyzed'},
       timestamp: {type: 'long', index: 'not_analyzed'},
     },
   },

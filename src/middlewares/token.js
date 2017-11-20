@@ -1,22 +1,21 @@
 const config = require('../config');
+const log = require('../log');
 
 function tokenMiddleware(req, res, next) {
-  if (config.verboseLogging) {
-    console.log('request params: ' + JSON.stringify(req.params, null, 2));
-    console.log('request query params: ' + JSON.stringify(req.query, null, 2));
-  }
+  log.verbose('request params ' + JSON.stringify(req.params, null, 2));
+  log.verbose('request query params ' + JSON.stringify(req.query, null, 2));
 
   if (!('token' in req.query) || req.query.token !== config.webhook.finalToken) {
-    res.sendStatus(403);
-    next(new Error('invalid access token has been provided'));
+    const err = 'invalid access token has been provided';
+    log.error(err);
+    next(err);
     return;
   }
 
-  if (config.verboseLogging) {
-    console.log('content received: ' + JSON.stringify(req.body, null, 2));
-  }
-
+  log.verbose('content received ' + JSON.stringify(req.body, null, 2));
+  log.verbose('token middleware - before');
   next();
+  log.verbose('token middleware - after');
 }
 
 module.exports = tokenMiddleware;

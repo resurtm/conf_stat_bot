@@ -1,31 +1,26 @@
 const axios = require('axios');
-const camelCaseKeys = require('camelcase-keys');
 const config = require('./config');
 const log = require('./log');
 
 const apiUrl = config.telegram.apiUrl.replace('{{ACCESS_TOKEN}}', config.telegram.botToken);
 
 async function simpleRequest(action, method = 'get') {
-  if (action === 'deleteWebhook') {
-    return false;
-  }
   const url = apiUrl + action;
   const resp = await axios({method, url});
-  log.verbose('data from ' + action + ' ' + JSON.stringify(resp.data, null, 2));
+  log.verbose('data from telegram "' + action + '" ' + JSON.stringify(resp.data, null, 2));
   if (!resp.data.ok) {
-    const err = 'response data from ' + action + ' is not ok';
+    const err = 'response data from telegram ' + action + ' is not ok';
     log.error(err);
     throw new Error(err);
   }
   return resp.data.result;
 }
 
-async function dataRequest(methodName, data) {
-  const resp = await axios.post(
-    apiUrl + methodName,
-    JSON.stringify(data),
-    {headers: {'Content-Type': 'application/json'}},
-  );
+async function dataRequest(action, data) {
+  const url = apiUrl + action;
+  const resp = await axios.post(url, JSON.stringify(data), {headers: {'Content-Type': 'application/json'}});
+  log.verbose('data to telegram "' + action + '" ' + JSON.stringify(data, null, 2));
+  log.verbose('data from telegram "' + action + '" ' + JSON.stringify(resp.data, null, 2));
   return resp.data.result;
 }
 
@@ -35,7 +30,9 @@ function getMe() {
 
 async function setWebhook(webhookUrl) {
   if (!await dataRequest('setWebhook', {url: webhookUrl})) {
-    throw new Error('cannot set new webhook');
+    const err = 'cannot set new webhook, to be set "' + webhookUrl + '"';
+    log.error(err);
+    throw new Error(err);
   }
 }
 
@@ -47,17 +44,15 @@ async function deleteWebhook() {
   }
 }
 
-async function getWebhookInfo() {
-  const res = await simpleRequest('getWebhookInfo');
-  if (config.verboseLogging) {
-    console.log('webhook info: ' + JSON.stringify(res, null, 2));
-  }
-  return res;
+function getWebhookInfo() {
+  return simpleRequest('getWebhookInfo');
 }
 
-async function sendMessage({chatId, messageText, replyToMessageId, parseMode}) {
+function sendMessage({chatId, messageText, replyToMessageId, parseMode}) {
   if (typeof chatId === 'undefined' || typeof messageText === 'undefined') {
-    throw new Error('"chatId" and "messageText" parameters both must be set');
+    const err = '"chatId" and "messageText" parameters both must be set';
+    log.error(err);
+    throw new Error(err);
   }
   const params = {chat_id: chatId, text: messageText};
   if (typeof replyToMessageId !== 'undefined') {
@@ -66,7 +61,7 @@ async function sendMessage({chatId, messageText, replyToMessageId, parseMode}) {
   if (typeof parseMode !== 'undefined') {
     params.parse_mode = parseMode;
   }
-  return camelCaseKeys(await dataRequest('sendMessage', params));
+  return dataRequest('sendMessage', params);
 }
 
-module.exports = {simpleRequest, dataRequest, getMe, setWebhook, deleteWebhook, getWebhookInfo, sendMessage};
+module.exports = {getMe, setWebhook, deleteWebhook, getWebhookInfo, sendMessage};

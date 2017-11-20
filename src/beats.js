@@ -1,23 +1,22 @@
+const _ = require('lodash');
 const config = require('./config');
 const db = require('./db');
 const tools = require('./tools');
+const log = require('./log');
 
 async function cleanRateLimits() {
   const rateLimits = await db.RateLimit
     .where('timestamp', '<', tools.timestamp() - config.oneCommandPerSeconds)
     .fetchAll();
-  for (let i in rateLimits.models) {
-    const rateLimit = rateLimits.models[i];
-    console.log('cleaning rate limit: ' + rateLimit.id);
+  _.forEach(rateLimits, rateLimit => {
+    log.verbose('cleaning rate limit ' + rateLimit.id);
     rateLimit.destroy();
-  }
+  });
 }
 
 function register() {
-  if (config.verboseLogging) {
-    console.log('registering beats')
-  }
-  setInterval(cleanRateLimits, 1000);
+  log.verbose('registering beats');
+  setInterval(cleanRateLimits, 2000);
 }
 
-module.exports = {register};
+module.exports = register;
