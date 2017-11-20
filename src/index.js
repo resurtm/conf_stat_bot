@@ -5,6 +5,15 @@ const routes = require('./routes');
 const telegram = require('./telegram');
 const ngrok = require('./ngrok');
 const beats = require('./beats');
+const log = require('./log');
+
+const errorHandler = (type) => (err) => {
+  log.error((new Date).toUTCString() + ' ' + type + ':', err.message);
+  log.error(err.stack);
+  log.error('exit');
+};
+process.on('uncaughtException', errorHandler('uncaughtException'));
+process.on('unhandledRejection', errorHandler('unhandledRejection'));
 
 (async () => {
   await telegram.deleteWebhook();

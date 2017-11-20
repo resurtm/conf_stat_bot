@@ -6,10 +6,16 @@ const log = require('./log');
 const apiUrl = config.telegram.apiUrl.replace('{{ACCESS_TOKEN}}', config.telegram.botToken);
 
 async function simpleRequest(action, method = 'get') {
-  const resp = await axios({method, url: apiUrl + action});
-  log.verbose();
+  if (action === 'deleteWebhook') {
+    return false;
+  }
+  const url = apiUrl + action;
+  const resp = await axios({method, url});
+  log.verbose('data from ' + action + ' ' + JSON.stringify(resp.data, null, 2));
   if (!resp.data.ok) {
-    throw new Error('response data is not ok');
+    const err = 'response data from ' + action + ' is not ok';
+    log.error(err);
+    throw new Error(err);
   }
   return resp.data.result;
 }
@@ -35,7 +41,9 @@ async function setWebhook(webhookUrl) {
 
 async function deleteWebhook() {
   if (!await simpleRequest('deleteWebhook', 'post')) {
-    throw new Error('cannot remove existing webhook');
+    const err = 'cannot remove existing webhook';
+    log.error(err);
+    throw new Error(err);
   }
 }
 
