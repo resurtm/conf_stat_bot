@@ -3,7 +3,8 @@ const config = require('../config');
 
 function displayName(fromData) {
   const userName = _.get(fromData, 'username', null);
-  return userName === null || userName.length === 0 ? fromData.first_name : `@${userName}`;
+  const firstName = fromData.first_name.length > 30 ? fromData.first_name.substring(0, 30) + '...' : fromData.first_name;
+  return userName === null || userName.length === 0 ? firstName : `@${userName}`;
 }
 
 function isCommand(messageData) {
