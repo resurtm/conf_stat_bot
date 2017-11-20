@@ -4,8 +4,9 @@ const log = require('../log');
 function tokenMiddleware(req, res, next) {
   log.verbose('request params ' + JSON.stringify(req.params, null, 2));
   log.verbose('request query params ' + JSON.stringify(req.query, null, 2));
+  log.verbose('request path ' + req.path);
 
-  if (!('token' in req.query) || req.query.token !== config.webhook.finalToken) {
+  if (req.path === '/webhook/' && (!('token' in req.query) || req.query.token !== config.webhook.finalToken)) {
     const err = 'invalid access token has been provided';
     log.error(err);
     next(err);
