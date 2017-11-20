@@ -1,15 +1,14 @@
 const axios = require('axios');
 const camelCaseKeys = require('camelcase-keys');
 const config = require('./config');
+const log = require('./log');
 
 const apiUrl = config.telegram.apiUrl.replace('{{ACCESS_TOKEN}}', config.telegram.botToken);
 
 async function simpleRequest(action, method = 'get') {
   const resp = await axios({method, url: apiUrl + action});
-  if (config.verboseLogging) {
-    console.log('simple request response: ' + JSON.stringify(resp.data, null, 2));
-  }
-  if (!resp.data.result) {
+  log.verbose();
+  if (!resp.data.ok) {
     throw new Error('response data is not ok');
   }
   return resp.data.result;
@@ -62,4 +61,4 @@ async function sendMessage({chatId, messageText, replyToMessageId, parseMode}) {
   return camelCaseKeys(await dataRequest('sendMessage', params));
 }
 
-module.exports = {getMe, setWebhook, deleteWebhook, getWebhookInfo, sendMessage};
+module.exports = {simpleRequest, dataRequest, getMe, setWebhook, deleteWebhook, getWebhookInfo, sendMessage};

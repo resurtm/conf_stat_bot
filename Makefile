@@ -1,8 +1,9 @@
-.PHONY: default ngrok nodemon run migrate rollback create_migration reset_es_indices test_analytics test_analytics_chats
+.PHONY: default ngrok nodemon run migrate rollback create_migration reset_es_indices test_analytics \
+	test_analytics_chats clear_logs
 
 default:
-	@echo "\navailable commands:\n\tngrok\n\tnodemon\n\trun\n\tmigrate\n\trollback\n\tcreate_migration"
-	@echo "\treset_es_indices\n\ttest_analytics\n\ttest_analytics_chats\n"
+	@echo "\navailable commands:\n\n\tngrok\n\tnodemon\n\trun\n\tmigrate\n\trollback\n\tcreate_migration"
+	@echo "\treset_es_indices\n\ttest_analytics\n\ttest_analytics_chats\n\tclear_logs\n"
 
 ngrok:
 	ngrok http 8900
@@ -31,3 +32,6 @@ test_analytics:
 test_analytics_chats:
 	scripts/test_analytics.js -1001262789346
 	scripts/test_analytics.js -1001199864056
+
+clear_logs:
+	rm -rfv logs/*.log
