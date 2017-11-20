@@ -8,7 +8,7 @@ async function cleanRateLimits() {
   const rateLimits = await db.RateLimit
     .where('timestamp', '<', tools.timestamp() - config.oneCommandPerSeconds)
     .fetchAll();
-  _.forEach(rateLimits, rateLimit => {
+  _.forEach(rateLimits.models, rateLimit => {
     log.verbose('cleaning rate limit ' + rateLimit.id);
     rateLimit.destroy();
   });
