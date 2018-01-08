@@ -7,7 +7,7 @@ const ngrok = require('./ngrok');
 const beats = require('./beats');
 const log = require('./log');
 
-const errorHandler = (type) => (err) => {
+const errorHandler = type => err => {
   log.error(type);
   log.error(err.stack);
   log.error('exit');

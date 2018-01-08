@@ -1,13 +1,31 @@
 Conf Stat Bot
 =============
 
-Telegram bot icon source:  
-https://www.flaticon.com/free-icon/artificial-intelligence_603840  
+Useful Links
+------------
+
+Production bot: https://t.me/conf_stat_bot  
+Development bot: https://t.me/conf_stat_test_bot (not stable, never use it!)  
+
+Support conference for the end users: https://t.me/conf_stat_bot_support  
+
+Test conferences for the developers:  
+https://t.me/joinchat/Es1b3ktEouKTaZGrm74_5g  
+https://t.me/joinchat/Es1b3keEePjBuEdYTSTlmA  
+
+Data & Resource Files:
+----------------------
+
+artificial-intelligence:  
+https://www.flaticon.com/free-icon/artificial-intelligence_603840
+
+radioactive:  
+http://all-free-download.com/free-vector/download/incessantblabber-radioactive-symbol-clip-art_16858.html
 
 License
-=======
+-------
 
-    Copyright 2017 resurtm
+    Copyright 2017—2018 resurtm@gmail.com
 
     Permission is hereby granted, free of charge, to any person obtaining a copy of
     this software and associated documentation files (the "Software"), to deal in
