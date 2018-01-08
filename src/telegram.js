@@ -5,11 +5,10 @@ const log = require('./log');
 const apiUrl = config.telegram.apiUrl.replace('{{ACCESS_TOKEN}}', config.telegram.botToken);
 
 async function simpleRequest(action, method = 'get') {
-  const url = apiUrl + action;
-  const resp = await axios({method, url});
-  log.verbose('data from telegram "' + action + '" ' + JSON.stringify(resp.data, null, 2));
+  const resp = await axios({method, url: apiUrl + action});
+  log.debug(`data from telegram "${action}" ` + JSON.stringify(resp.data, null, 2));
   if (!resp.data.ok) {
-    const err = 'response data from telegram ' + action + ' is not ok';
+    const err = `response data from telegram "${action}" is not ok`;
     log.error(err);
     throw new Error(err);
   }
@@ -17,10 +16,13 @@ async function simpleRequest(action, method = 'get') {
 }
 
 async function dataRequest(action, data) {
-  const url = apiUrl + action;
-  const resp = await axios.post(url, JSON.stringify(data), {headers: {'Content-Type': 'application/json'}});
-  log.verbose('data to telegram "' + action + '" ' + JSON.stringify(data, null, 2));
-  log.verbose('data from telegram "' + action + '" ' + JSON.stringify(resp.data, null, 2));
+  const resp = await axios.post(
+    apiUrl + action,
+    JSON.stringify(data),
+    {headers: {'Content-Type': 'application/json'}},
+  );
+  log.debug(`data to telegram "${action}" ` + JSON.stringify(data, null, 2));
+  log.debug(`data from telegram "${action}" ` + JSON.stringify(resp.data, null, 2));
   return resp.data.result;
 }
 
@@ -28,9 +30,9 @@ function getMe() {
   return simpleRequest('getMe');
 }
 
-async function setWebhook(webhookUrl) {
-  if (!await dataRequest('setWebhook', {url: webhookUrl})) {
-    const err = 'cannot set new webhook, to be set "' + webhookUrl + '"';
+async function setWebhook(url) {
+  if (!await dataRequest('setWebhook', {url})) {
+    const err = `cannot set a new webhook, value to be set "${url}"`;
     log.error(err);
     throw new Error(err);
   }
@@ -50,7 +52,7 @@ function getWebhookInfo() {
 
 function sendMessage({chatId, messageText, replyToMessageId, parseMode}) {
   if (typeof chatId === 'undefined' || typeof messageText === 'undefined') {
-    const err = '"chatId" and "messageText" parameters both must be set';
+    const err = '"chatId" and "messageText" arguments both must be set';
     log.error(err);
     throw new Error(err);
   }
