@@ -1,7 +1,7 @@
 const _ = require('lodash');
-const db = require('../src/db');
-const elastic = require('../src/elastic');
-const tools = require('../src/tools');
+const db = require('./db');
+const elastic = require('./elastic');
+const tools = require('./tools');
 
 function topPostersLast24HoursQuery(chatId, topCount = 10) {
   return elastic.client.search({

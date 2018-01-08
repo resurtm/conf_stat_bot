@@ -6,9 +6,9 @@ default:
 ngrok:
 	ngrok http 8900
 
-.PHONY: nodemon
-nodemon:
-	node_modules/.bin/nodemon src/index.js localhost 8900 --watch src
+.PHONY: watch
+watch:
+	node_modules/.bin/nodemon lib/index.js --watch lib
 
 .PHONY: run
 run:
@@ -42,3 +42,17 @@ test_analytics_chats:
 .PHONY: clear_logs
 clear_logs:
 	rm -rfv logs/*.log
+
+.PHONY: types
+types:
+	rm -rfv lib/*
+	node_modules/.bin/flow-remove-types src --out-dir lib --pretty --all
+
+.PHONY: watch_types
+watch_types:
+	rm -rfv lib/*
+	node_modules/.bin/nodemon node_modules/.bin/flow-remove-types src --out-dir lib --pretty --all --watch src
+
+.PHONY: flow
+flow:
+	node_modules/.bin/flow
