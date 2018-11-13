@@ -18,9 +18,9 @@ async function request({ method = 'get', action, data = {} }) {
     return resp.data;
 }
 
-function checkResult(res) {
+function checkResult(res, errorMessage) {
     if (!res || !('ok' in res) || !res.ok || !('result' in res) || !res.result) {
-        throw new Error('unable to set telegram webhook');
+        throw new Error(errorMessage);
     }
 }
 
@@ -29,7 +29,7 @@ async function setWebhook(url) {
         action: 'setWebhook',
         data: { url },
     });
-    checkResult(res);
+    checkResult(res, 'unable to set telegram webhook');
 }
 
 async function deleteWebhook() {
@@ -37,7 +37,7 @@ async function deleteWebhook() {
         method: 'post',
         action: 'deleteWebhook',
     });
-    checkResult(res);
+    checkResult(res, 'unable to delete telegram webhook');
 }
 
 module.exports = {

@@ -11,7 +11,7 @@
         "start:prod": "DEBUG=app:* node src/app.js",
         "start:dev": "DEBUG=app:* nodemon src/app.js",
         "lint": "eslint --fix src",
-        "test": ""
+        "test": "find src -name '*.test.js' | xargs mocha"
     },
     "engines": {
         "node": ">=8.12.0",
