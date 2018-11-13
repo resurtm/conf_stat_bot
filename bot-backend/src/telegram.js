@@ -1,12 +1,14 @@
 const debug = require('debug')('app:telegram');
 const axios = require('axios');
 
-const {BOT_API_URL, BOT_API_TOKEN} = process.env;
+const { BOT_API_URL, BOT_API_TOKEN } = process.env;
 
 async function request({ method = 'get', action, data = {} }) {
     const url = BOT_API_URL.replace('{{BOT_API_TOKEN}}', BOT_API_TOKEN) + action;
-    const headers = {'Content-Type': 'application/json'};
-    const resp = await axios({method, url, data, headers});
+    const headers = { 'Content-Type': 'application/json' };
+    const resp = await axios({
+        method, url, data, headers,
+    });
 
     debug(`data to telegram POST ${action}`);
     debug(JSON.stringify(data, null, 2));
@@ -25,7 +27,7 @@ function checkResult(res) {
 async function setWebhook(url) {
     const res = await request({
         action: 'setWebhook',
-        data: {url},
+        data: { url },
     });
     checkResult(res);
 }

@@ -10,7 +10,7 @@
         "start": "scripts/start.sh",
         "start:prod": "DEBUG=app:* node src/app.js",
         "start:dev": "DEBUG=app:* nodemon src/app.js",
-        "lint": "",
+        "lint": "eslint --fix src",
         "test": ""
     },
     "engines": {
