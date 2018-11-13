@@ -1,6 +1,1 @@
-/.idea/
-/node_modules/
-/config*.json
-!/config.sample.json
-/test*.js
-/logs/*.log
+.idea
