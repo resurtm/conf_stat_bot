@@ -1,3 +1,3 @@
-# Admin service
+# API service
 
 TBD:

@@ -2,8 +2,11 @@ version: '3'
 
 services:
   bot-backend:
-    environment:
-      NODE_ENV: development
     volumes:
     - ./bot-backend:/work/app
+    environment:
+      NODE_ENV: development
+      BOT_API_TOKEN: 'XXX'
+      BOT_API_URL: 'https://api.telegram.org/bot{{BOT_API_TOKEN}}/'
+      BOT_API_WEBHOOK_URL: 'XXX'
     command: /work/app/scripts/start.sh
